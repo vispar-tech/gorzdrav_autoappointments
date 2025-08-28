@@ -111,7 +111,6 @@ docker-compose down
 
 ```env
 BOT_TOKEN=your_telegram_bot_token
-GORZDRAV_API_URL=your_api_url
 ```
 
 ### Логирование
@@ -122,33 +121,6 @@ GORZDRAV_API_URL=your_api_url
 -   Ротация: ежедневная
 -   Сжатие: ZIP
 -   Кодировка: UTF-8
-
-## Разработка
-
-### Добавление новых логов
-
-```python
-from loguru import logger
-
-logger.info("Информационное сообщение")
-logger.debug("Отладочная информация")
-logger.warning("Предупреждение")
-logger.error("Ошибка")
-logger.critical("Критическая ошибка")
-```
-
-### Просмотр логов
-
-```bash
-# Все логи
-tail -f logs/bot_$(date +%Y-%m-%d).log
-
-# Только ошибки
-tail -f logs/errors_$(date +%Y-%m-%d).log
-
-# Логи Docker контейнера
-make logs
-```
 
 ## Лицензия
 
