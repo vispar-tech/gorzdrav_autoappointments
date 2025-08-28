@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  gorzdrav-bot:
+    build: .
+    container_name: gorzdrav-bot
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Монтируем базу данных
+      - ./gorzdrav_bot.db:/app/gorzdrav_bot.db
+      # Монтируем директорию логов
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000" # Если понадобится веб-интерфейс
+    networks:
+      - gorzdrav-network
+
+networks:
+  gorzdrav-network:
+    driver: bridge
