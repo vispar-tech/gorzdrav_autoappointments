@@ -73,7 +73,6 @@
 │   ├── settings/          # Настройки (включая логирование)
 │   └── utils/             # Утилиты
 ├── logs/                  # Директория для логов
-├── requests/              # Примеры API запросов
 ├── docker-compose.yml     # Docker Compose конфигурация
 ├── Dockerfile            # Docker образ
 └── Makefile              # Команды для управления
@@ -85,7 +84,6 @@
 
 -   **База данных**: `./gorzdrav_bot.db:/app/gorzdrav_bot.db`
 -   **Логи**: `./logs:/app/logs`
--   **Запросы**: `./requests:/app/requests`
 
 ### Команды Docker
 
