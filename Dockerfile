@@ -19,7 +19,7 @@ RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
 # Устанавливаем зависимости
-RUN poetry install --no-dev --no-interaction --no-ansi
+RUN poetry install --no-interaction --no-ansi
 
 # Создаем необходимые директории
 RUN mkdir -p /app/logs

@@ -12,8 +12,6 @@ services:
       - ./gorzdrav_bot.db:/app/gorzdrav_bot.db
       # Монтируем директорию логов
       - ./logs:/app/logs
-    ports:
-      - "8000:8000" # Если понадобится веб-интерфейс
     networks:
       - gorzdrav-network
 
