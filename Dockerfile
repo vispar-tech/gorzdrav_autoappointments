@@ -27,9 +27,5 @@ RUN mkdir -p /app/logs
 # Копируем исходный код
 COPY . .
 
-# Создаем пользователя для безопасности
-RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
-USER app
-
 # Команда по умолчанию
 CMD ["python", "-m", "bot"]
