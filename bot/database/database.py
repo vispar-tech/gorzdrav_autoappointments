@@ -13,7 +13,7 @@ from sqlalchemy.orm import (
 
 # Создаем движок для SQLite
 engine = create_async_engine(
-    url="sqlite+aiosqlite:///gorzdrav_bot.db",
+    url="sqlite+aiosqlite:///data/gorzdrav_bot.db",
 )
 
 # Создаем фабрику сессий

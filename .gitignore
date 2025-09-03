@@ -167,3 +167,5 @@ ehthumbs.db
 Thumbs.db
 
 requests
+
+data/*

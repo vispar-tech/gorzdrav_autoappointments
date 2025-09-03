@@ -64,7 +64,6 @@ async def register_handler(message: Message, state: FSMContext):
             "username": message.from_user.username,
             "first_name": message.from_user.first_name,
             "last_name": message.from_user.last_name,
-            "is_registered": False,
         }
 
         await user_repo.get_or_create_user(user_id, None, **user_data)
@@ -73,8 +72,8 @@ async def register_handler(message: Message, state: FSMContext):
         await state.set_state(RegistrationStates.waiting_for_last_name)
         await message.answer("Введите вашу фамилию (только буквы):")
 
-    except Exception as e:
-        logger.error(f"Ошибка при регистрации пользователя {user_id}: {e}")
+    except Exception:
+        logger.exception(f"Ошибка при регистрации пользователя {user_id}")
         await message.answer("Произошла ошибка при регистрации. Попробуйте позже.")
 
 
@@ -440,11 +439,8 @@ async def lpu_choice_handler(message: Message, state: FSMContext):
 
                 gorzdrav_id = search.result
 
-            # Завершаем регистрацию: помечаем пользователя зарегистрированным и создаем пациента
             user_repo = UserRepository()
-            await user_repo.update_user(
-                user_id, None, phone=phone, email=email, is_registered=True
-            )
+            await user_repo.update_user(user_id, None, phone=phone, email=email)
 
             patient_repo = PatientRepository()
             # создаем нового пациента

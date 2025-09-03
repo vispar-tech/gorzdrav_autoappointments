@@ -3,18 +3,13 @@ version: "3.8"
 services:
   gorzdrav-bot:
     build: .
+    image: gorzdrav-bot:${GORZDRAV_BOT_VERSION:-latest}
     container_name: gorzdrav-bot
     restart: unless-stopped
-    environment:
-      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     volumes:
       # Монтируем базу данных
-      - ./gorzdrav_bot.db:/app/gorzdrav_bot.db
+      - ./data:/usr/src/data
       # Монтируем директорию логов
-      - ./logs:/app/logs
-    networks:
-      - gorzdrav-network
-
-networks:
-  gorzdrav-network:
-    driver: bridge
+      - ./logs:/usr/src/logs
