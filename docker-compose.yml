@@ -26,6 +26,7 @@ services:
       DB_BASE: ${PG_DATABASE}
     volumes:
       # Монтируем директорию логов
+      - bot-data:/usr/src/data
       - ./logs:/usr/src/logs
 
   db:
@@ -74,4 +75,6 @@ services:
 
 volumes:
   gorzdrav-bot-db-data:
+    driver: local
+  bot-data:
     driver: local
