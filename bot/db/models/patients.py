@@ -32,8 +32,8 @@ class Patient(Base):
     birth_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     # Health insurance information
-    polis_s: Mapped[str | None] = mapped_column(String(20), nullable=False)
-    polis_n: Mapped[str] = mapped_column(String(20), nullable=True)
+    polis_s: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    polis_n: Mapped[str] = mapped_column(String(20), nullable=False)
 
     # Contact information
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
