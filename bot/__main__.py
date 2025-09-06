@@ -31,7 +31,8 @@ async def aiogram_on_startup_polling() -> None:
         routers.schedules_router,
         routers.patients_router,
         routers.appointments_router,
-        routers.payments_router,
+        # routers.payments_router,  # Временно отключен
+        routers.subscription_router,
     )
 
     # Start scheduler
