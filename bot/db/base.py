@@ -6,6 +6,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import DeclarativeBase
 
+from bot.db.meta import meta
+
 logger = logging.getLogger(__name__)
 
 
@@ -13,6 +15,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     """Base for all models."""
 
     __abstract__ = True
+    metadata = meta
 
     def to_dict(self) -> dict[str, Any]:
         """

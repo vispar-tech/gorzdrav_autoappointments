@@ -9,7 +9,53 @@ services:
     env_file:
       - .env
     volumes:
-      # Монтируем базу данных
-      - ./data:/usr/src/data
       # Монтируем директорию логов
       - ./logs:/usr/src/logs
+
+  db:
+    image: postgres:16.3-bullseye
+    hostname: gorzdrav-bot-db
+    container_name: gorzdrav-bot-db
+    networks:
+      - default
+      # - traefiktointernet
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_DB: ${PG_DATABASE}
+      PGPORT: ${PG_PORT}
+    ports:
+      - ${PG_PORT}:${PG_PORT}
+    expose:
+      - ${PG_PORT}
+    volumes:
+      - gorzdrav-bot-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U ${PG_USER}
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: gorzdrav-bot:${GORZDRAV_BOT_VERSION:-latest}
+    container_name: gorzdrav-bot-migrator
+    restart: "no"
+    networks:
+      - default
+    command: alembic upgrade head
+    env_file:
+      - .env
+    environment:
+      DB_HOST: gorzdrav-bot-db
+      DB_PORT: ${PG_PORT}
+      DB_USER: ${PG_USER}
+      DB_PASS: ${PG_PASSWORD}
+      DB_BASE: ${PG_DATABASE}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  gorzdrav-bot-db-data:
+    driver: local

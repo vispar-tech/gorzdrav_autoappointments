@@ -1,6 +1,4 @@
-"""
-Константы для API Горздрав
-"""
+"""Constants for Gorzdrav API."""
 
 # Базовые URL
 BASE_URL = "https://gorzdrav.spb.ru"
@@ -8,24 +6,26 @@ BASE_URL = "https://gorzdrav.spb.ru"
 
 # Endpoints
 ENDPOINTS = {
-    # Общие
+    # General
     "districts": "_api/api/v2/shared/districts",
     "lpus": "_api/api/v2/shared/lpus",
     "lpus_by_district": "_api/api/v2/shared/district/{district_id}/lpus",
-    # Расписание
+    # Schedule
     "specialists": "_api/api/v2/schedule/lpu/{lpu_id}/specialties",
     "doctors": "_api/api/v2/schedule/lpu/{lpu_id}/speciality/{specialist_id}/doctors",
     "appointments": "_api/api/v2/schedule/lpu/{lpu_id}/doctor/{doctor_id}/appointments",
-    # Пациенты
+    # Patients
     "patient_search": "_api/api/v2/patient/search",
     "patient_update": "_api/api/v2/patient/update",
-    # Запись
+    # Appointment
     "appointment_create": "_api/api/v2/appointment/create",
-    # Записи пациента
+    # Patient appointments
     "patient_appointments": "_api/api/v2/appointments",
+    # Attachments
+    "attachments": "_api/api/v2/oms/attachment/lpus",
 }
 
-# HTTP заголовки
+# HTTP headers
 DEFAULT_HEADERS = {
     "accept": "application/json, text/javascript, */*; q=0.01",
     "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",

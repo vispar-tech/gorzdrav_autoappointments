@@ -16,6 +16,7 @@ RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main
 
 # Copying actuall application
 COPY ./bot ./bot
+COPY alembic.ini ./alembic.ini
 
 
 CMD ["python", "-m", "bot"]

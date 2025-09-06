@@ -3,47 +3,49 @@ from typing import TYPE_CHECKING
 import orjson
 from loguru import logger
 
-# Импортируем настройки логирования
-from bot.settings.logging import setup_logging
-
 from bot import routers
+from bot.db.engine import close_engine
 from bot.loader import bot, dispatcher, loop
-from bot.utils.scheduler import AppointmentScheduler, SchedulerConfig
-from bot.utils.session import SmartAiogramAiohttpSession
+from bot.settings.logging import setup_logging
 from bot.utils.commands import setup_default_commands
-from bot.database.database import close_engine, create_tables
+
+# from bot.utils.scheduler import AppointmentScheduler, SchedulerConfig
+from bot.utils.session import SmartAiogramAiohttpSession
 
 if TYPE_CHECKING:
     from aiogram.client.session.aiohttp import AiohttpSession
 
 
 async def aiogram_on_startup_polling() -> None:
-    # Создаём таблицы
-    await create_tables()
+    """AIogram on startup polling."""
     await bot.delete_webhook(drop_pending_updates=True)
     dispatcher["temp_bot_cloud_session"] = SmartAiogramAiohttpSession(
         json_loads=orjson.loads,
     )
     await setup_default_commands(bot)
     dispatcher.include_routers(
-        routers.register_router, routers.start_router, routers.schedule_router
+        routers.start_router,
+        routers.schedules_router,
+        routers.patients_router,
+        routers.appointments_router,
     )
 
-    # Запускаем планировщик
-    scheduler = AppointmentScheduler(SchedulerConfig(interval_seconds=10))
-    dispatcher["appointment_scheduler"] = scheduler
-    await scheduler.start()
+    # Start scheduler
+    # scheduler = AppointmentScheduler(SchedulerConfig(interval_seconds=10))
+    # dispatcher["appointment_scheduler"] = scheduler
+    # await scheduler.start()
 
-    logger.info("Бот запущен")
+    logger.info("Bot started")
 
 
 async def aiogram_on_shutdown_polling() -> None:
-    # Останавливаем планировщик
-    scheduler: AppointmentScheduler | None = dispatcher.workflow_data.get(
-        "appointment_scheduler"
-    )  # type: ignore
-    if scheduler:
-        await scheduler.stop()
+    """AIogram on shutdown polling."""
+    # Stop scheduler
+    # scheduler: AppointmentScheduler | None = dispatcher.workflow_data.get(
+    #     "appointment_scheduler",
+    # )  # type: ignore
+    # if scheduler:
+    #     await scheduler.stop()
 
     await close_engine()
     await bot.session.close()
@@ -55,6 +57,7 @@ async def aiogram_on_shutdown_polling() -> None:
 
 
 def main() -> None:
+    """Main function."""
     setup_logging()
     dispatcher.startup.register(aiogram_on_startup_polling)
     dispatcher.shutdown.register(aiogram_on_shutdown_polling)
