@@ -8,6 +8,11 @@ class Settings(BaseSettings):
 
     BOT_TOKEN: str = Field(default=...)
 
+    # Настройки платежей через Telegram
+    PROVIDER_TOKEN: str = Field(default=...)
+    CURRENCY: str = Field(default="RUB")
+    SUBSCRIPTION_PRICE: int = Field(default=50000)  # в копейках
+
     DB_HOST: str = "localhost"
     DB_PORT: int = 5442
     DB_USER: str = "gorzdrav_bot"

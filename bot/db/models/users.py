@@ -13,6 +13,7 @@ from bot.db.types import (
 
 if TYPE_CHECKING:
     from bot.db.models.patients import Patient
+    from bot.db.models.payments import Payment
 
 
 class User(Base):
@@ -26,7 +27,6 @@ class User(Base):
     last_name: Mapped[str | None] = mapped_column(String(100))
 
     is_subscribed: Mapped[bool] = mapped_column(default=False)
-    subscription_start: Mapped[datetime | None] = mapped_column(DateTime)
     subscription_end: Mapped[datetime | None] = mapped_column(DateTime)
     no_same_day_booking: Mapped[bool] = mapped_column(default=False)
     external_priority: Mapped[bool] = mapped_column(default=False)
@@ -37,6 +37,11 @@ class User(Base):
     # Relationship with patients (one-to-many)
     patients: Mapped[List["Patient"]] = relationship(
         back_populates="user",
-        uselist=True,
+        lazy="selectin",
+    )
+
+    # Relationship with payments (one-to-many)
+    payments: Mapped[List["Payment"]] = relationship(
+        back_populates="user",
         lazy="selectin",
     )

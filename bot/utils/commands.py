@@ -6,6 +6,8 @@ DEFAULT_COMMANDS: list[BotCommand] = [
     BotCommand(command="patients", description="Пациенты пользователя"),
     BotCommand(command="schedules", description="Все расписания всех пациентов"),
     BotCommand(command="appointments", description="Все записи всех пациентов"),
+    BotCommand(command="subscribe", description="Оформить подписку"),
+    BotCommand(command="my_subscription", description="Ваша подписка"),
     BotCommand(command="help", description="Помощь и поддержка"),
 ]
 
