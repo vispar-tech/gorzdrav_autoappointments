@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Optional
 from loguru import logger
 
 from bot.db.context import get_or_create_session
+from bot.db.models.enums import ScheduleStatus
 from bot.db.models.users import User
 from bot.db.services import UsersService
 from bot.loader import bot
@@ -109,19 +110,19 @@ class SubscriptionCheckerService:
         try:
             # Деактивируем подписку
             user.is_subscribed = False
+            for patient in user.patients:
+                for schedule in patient.schedules:
+                    if schedule.status == ScheduleStatus.PENDING:
+                        schedule.status = ScheduleStatus.CANCELLED
 
             # Отправляем уведомление
             await bot.send_message(
                 chat_id=user.id,
                 text=(
                     "<b>❌ Ваша подписка истекла</b>\n\n"
-                    "Для продления подписки используйте команду /subscribe\n\n"
-                    "✨ <b>Что дает подписка:</b>\n"
-                    "• До 10 пациентов для записи\n"
-                    "• До 10 активных расписаний\n"
-                    "• Безлимитное исполнение расписаний\n"
-                    "• Приоритетная исполнение расписаний\n"
-                    "• Приоритетная поддержка"
+                    "Все ваши активные расписания были автоматически отменены.\n\n"
+                    "Для продления подписки и возобновления работы с расписаниями "
+                    "используйте команду /subscribe\n\n"
                 ),
             )
             await session.commit()

@@ -97,8 +97,15 @@ def get_patients_keyboard(
     """
     keyboard: list[list[InlineKeyboardButton]] = []
 
+    # Add patient button (limited by subscription)
+    max_patients = (
+        settings.MAX_SUBSCRIBED_PATIENTS
+        if user.is_subscribed
+        else settings.MAX_UNSUBSCRIBED_PATIENTS
+    )
+
     # Create buttons for each patient
-    for patient in patients:
+    for patient in patients[:max_patients]:
         patient_name = (
             f"{patient.last_name} {patient.first_name} {patient.middle_name}".strip()
         )
@@ -116,13 +123,6 @@ def get_patients_keyboard(
                 ),
             ],
         )
-
-    # Add patient button (limited by subscription)
-    max_patients = (
-        settings.MAX_SUBSCRIBED_PATIENTS
-        if user.is_subscribed
-        else settings.MAX_UNSUBSCRIBED_PATIENTS
-    )
 
     if len(patients) < max_patients:
         keyboard.append(
@@ -336,6 +336,13 @@ async def get_schedules_keyboard(  # noqa: C901, PLR0912
     """Create a keyboard with a list of schedules."""
     keyboard: list[list[InlineKeyboardButton]] = []
 
+    # Add patient button (limited by subscription)
+    max_schedules = (
+        settings.MAX_SUBSCRIBED_SCHEDULES
+        if user.is_subscribed
+        else settings.MAX_UNSUBSCRIBED_SCHEDULES
+    )
+
     # Предварительно загружаем все специализации для уникальных ЛПУ
     specializations_cache: dict[str, dict[str, str | None]] = {}
     unique_lpu_ids = list({schedule.lpu_id for schedule in schedules})
@@ -357,7 +364,7 @@ async def get_schedules_keyboard(  # noqa: C901, PLR0912
             logger.error("Error loading specializations for schedules")
 
     # Кнопки для каждого расписания
-    for schedule in schedules:
+    for schedule in schedules[:max_schedules]:
         if schedule.status != ScheduleStatus.PENDING:
             continue
         # Форматируем имя пациента
@@ -408,11 +415,9 @@ async def get_schedules_keyboard(  # noqa: C901, PLR0912
     can_create = False
     if user.is_subscribed:
         pending_schedules = [s for s in schedules if s.status == ScheduleStatus.PENDING]
-        max_schedules = settings.MAX_SUBSCRIBED_SCHEDULES
         can_create = len(pending_schedules) < max_schedules
     else:
         total_schedules = len(schedules)
-        max_schedules = settings.MAX_UNSUBSCRIBED_SCHEDULES
         can_create = total_schedules < max_schedules
 
     if can_create:

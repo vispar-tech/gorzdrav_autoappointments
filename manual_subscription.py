@@ -9,6 +9,7 @@ from decimal import Decimal
 from loguru import logger
 
 from bot.db.context import get_or_create_session
+from bot.db.models.enums import ScheduleStatus
 from bot.db.services import PaymentsService, UsersService
 
 
@@ -57,6 +58,10 @@ async def activate_subscription(user_id: int, days: int = 30) -> None:
             # Activate subscription
             user.is_subscribed = True
             user.subscription_end = datetime.now() + timedelta(days=days)
+            for patient in user.patients:
+                for schedule in patient.schedules:
+                    if schedule.status == ScheduleStatus.CANCELLED:
+                        schedule.status = ScheduleStatus.PENDING
 
             await session.commit()
 

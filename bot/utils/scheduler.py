@@ -209,7 +209,7 @@ class AppointmentScheduler:
         appointment: Appointment,
         doctor_name: str,
     ) -> None:
-        """Creates an appointment, sends a notification and deletes the schedule."""
+        """Creates an appointment, sends a notification and update the schedule."""
         try:
             # Creates an appointment
             create_request = AppointmentCreateRequest(
@@ -239,7 +239,7 @@ class AppointmentScheduler:
                     schedule.id,
                     status=ScheduleStatus.FOUND,
                 )
-            logger.info(f"Schedule {schedule.id} deleted after successful appointment")
+            logger.info(f"Schedule {schedule.id} updated after successful appointment")
 
             # Sends a notification to the user
             await self._send_notification(patient, appointment, doctor_name)

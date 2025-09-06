@@ -258,7 +258,7 @@ async def create_schedule_callback(
             if user.is_subscribed:
                 # Платные: максимум 10 активных расписаний (не отмененных)
                 active_schedules = [
-                    s for s in schedules if s.status != ScheduleStatus.CANCELLED
+                    s for s in schedules if s.status != ScheduleStatus.PENDING
                 ]
                 max_schedules = settings.MAX_SUBSCRIBED_SCHEDULES
                 current_count = len(active_schedules)
@@ -268,7 +268,7 @@ async def create_schedule_callback(
                         f"❌ <b>Лимит активных расписаний достигнут</b>\n\n"
                         f"📊 Активных расписаний: {current_count}/{max_schedules}\n"
                         f"💡 <i>Удалите одно из существующих расписаний или "
-                        f"дождитесь отмены записи</i>",
+                        f"дождитесь исполнения записи</i>",
                     )
                     return
             else:
@@ -802,9 +802,7 @@ async def show_schedule_confirmation(  # noqa: C901, PLR0912, PLR0915
             if user.is_subscribed:
                 # Платные: считаем активные расписания (не отмененные)
                 active_schedules = [
-                    s
-                    for s in existing_schedules
-                    if s.status != ScheduleStatus.CANCELLED
+                    s for s in existing_schedules if s.status == ScheduleStatus.PENDING
                 ]
                 current_count = len(active_schedules)
                 max_schedules = settings.MAX_SUBSCRIBED_SCHEDULES
