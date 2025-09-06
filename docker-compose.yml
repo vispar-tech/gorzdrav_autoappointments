@@ -1,13 +1,29 @@
 version: "3.8"
 
+networks:
+  traefiktointernet:
+    name: "traefiktointernet"
+    driver: bridge
+    external: true
+    internal: false
+    attachable: false
+
 services:
   gorzdrav-bot:
     build: .
     image: gorzdrav-bot:${GORZDRAV_BOT_VERSION:-latest}
     container_name: gorzdrav-bot
     restart: unless-stopped
+    networks:
+      - default
     env_file:
       - .env
+    environment:
+      DB_HOST: gorzdrav-bot-db
+      DB_PORT: ${PG_PORT}
+      DB_USER: ${PG_USER}
+      DB_PASS: ${PG_PASSWORD}
+      DB_BASE: ${PG_DATABASE}
     volumes:
       # Монтируем директорию логов
       - ./logs:/usr/src/logs
@@ -18,7 +34,7 @@ services:
     container_name: gorzdrav-bot-db
     networks:
       - default
-      # - traefiktointernet
+      - traefiktointernet
     environment:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_USER: ${PG_USER}
