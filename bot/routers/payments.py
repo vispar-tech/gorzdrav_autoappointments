@@ -230,9 +230,16 @@ async def my_subscription_handler(message: Message, state: FSMContext) -> None:
                 )
                 return
 
-            if user.is_subscribed and user.subscription_end:
-                # Проверяем, не истекла ли подписка
-                if datetime.now() > user.subscription_end:
+            if user.is_subscribed:
+                if user.subscription_end is None:
+                    # Безлимитная подписка
+                    await message.answer(
+                        "<b>✅ У вас есть активная подписка</b>\n\n"
+                        "Тип подписки: Безлимитная",
+                        reply_markup=get_start_keyboard(),
+                    )
+                elif datetime.now() > user.subscription_end:
+                    # Подписка истекла
                     user.is_subscribed = False
                     await session.commit()
                     await message.answer(
@@ -241,13 +248,14 @@ async def my_subscription_handler(message: Message, state: FSMContext) -> None:
                         reply_markup=get_start_keyboard(),
                     )
                 else:
+                    # Активная подписка с датой окончания
                     remaining_days = (user.subscription_end - datetime.now()).days
                     await message.answer(
                         (
                             "<b>✅ У вас есть активная подписка</b>\n\n"
                             f"Подписка действует до: "
                             f"{user.subscription_end.strftime('%d.%m.%Y %H:%M')}\n"
-                            f"Осталось дней: {remaining_days}"
+                            f"<b>Осталось дней: {remaining_days}</b>"
                         ),
                         reply_markup=get_start_keyboard(),
                     )

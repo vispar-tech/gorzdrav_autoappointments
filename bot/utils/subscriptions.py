@@ -109,7 +109,6 @@ class SubscriptionCheckerService:
         try:
             # Деактивируем подписку
             user.is_subscribed = False
-            user.subscription_end = None
 
             # Отправляем уведомление
             await bot.send_message(
