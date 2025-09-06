@@ -93,24 +93,18 @@ class GorzdravAPIClient:
         """
         await self._ensure_session()
         url = urljoin(BASE_URL, endpoint)
-        logger.debug(f"Making {method} request to {url}")
 
         if self._session is None:
             raise RuntimeError("Session not initialized")
 
         async with self._session.request(method, url, **kwargs) as resp:
-            logger.debug(f"Response status: {resp.status}")
             data = await resp.json()
             if not data.get("success", False):
-                logger.error(
-                    f"API error: {data.get('message')} (code: {data.get('errorCode')})",
-                )
                 raise GorzdravAPIError(
                     message=data.get("message") or f"HTTP {resp.status}",
                     error_code=int(data.get("errorCode", 0)),
                     stack_trace=data.get("stackTrace"),
                 )
-            logger.debug("Request completed successfully")
             return data
 
     # Общие
