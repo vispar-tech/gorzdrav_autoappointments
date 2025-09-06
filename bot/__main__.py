@@ -8,8 +8,7 @@ from bot.db.engine import close_engine
 from bot.loader import bot, dispatcher, loop
 from bot.settings.logging import setup_logging
 from bot.utils.commands import setup_default_commands
-
-# from bot.utils.scheduler import AppointmentScheduler, SchedulerConfig
+from bot.utils.scheduler import AppointmentScheduler, SchedulerConfig
 from bot.utils.session import SmartAiogramAiohttpSession
 
 if TYPE_CHECKING:
@@ -31,9 +30,9 @@ async def aiogram_on_startup_polling() -> None:
     )
 
     # Start scheduler
-    # scheduler = AppointmentScheduler(SchedulerConfig(interval_seconds=10))
-    # dispatcher["appointment_scheduler"] = scheduler
-    # await scheduler.start()
+    scheduler = AppointmentScheduler(SchedulerConfig(interval_seconds=30))
+    dispatcher["appointment_scheduler"] = scheduler
+    await scheduler.start()
 
     logger.info("Bot started")
 
@@ -41,11 +40,11 @@ async def aiogram_on_startup_polling() -> None:
 async def aiogram_on_shutdown_polling() -> None:
     """AIogram on shutdown polling."""
     # Stop scheduler
-    # scheduler: AppointmentScheduler | None = dispatcher.workflow_data.get(
-    #     "appointment_scheduler",
-    # )  # type: ignore
-    # if scheduler:
-    #     await scheduler.stop()
+    scheduler: AppointmentScheduler | None = dispatcher.workflow_data.get(
+        "appointment_scheduler",
+    )  # type: ignore
+    if scheduler:
+        await scheduler.stop()
 
     await close_engine()
     await bot.session.close()

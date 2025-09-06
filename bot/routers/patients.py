@@ -697,7 +697,9 @@ async def email_handler(message: Message, state: FSMContext) -> None:
 
 
 @router.message(PatientFormStates.waiting_for_oms)
-async def oms_handler(message: Message, state: FSMContext) -> None:  # noqa: C901, PLR0911, PLR0912, PLR0915
+async def oms_handler(
+    message: Message, state: FSMContext
+) -> None:  # noqa: C901, PLR0911, PLR0912, PLR0915
     """Handles input of OMS data."""
     text = (message.text or "").strip()
     data = await state.get_data()

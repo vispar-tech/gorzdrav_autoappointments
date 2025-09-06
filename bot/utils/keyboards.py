@@ -380,9 +380,12 @@ async def get_schedules_keyboard(  # noqa: C901, PLR0912
             in specializations_cache[schedule.lpu_id]
         ):
             try:
-                specialization_name = specializations_cache[schedule.lpu_id][
-                    schedule.gorzdrav_specialist_id
-                ]
+                specialization_name = (
+                    specializations_cache[schedule.lpu_id][
+                        schedule.gorzdrav_specialist_id
+                    ]
+                    or "Не указана"
+                )
             except KeyError:
                 specialization_name = "Не указана"
 
